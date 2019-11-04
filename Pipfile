@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 python-dateutil = "*"
 textblob = "*"
+pandas = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "3.7"
