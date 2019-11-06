@@ -52,11 +52,23 @@ df.columns = ["date", "tweet", "sentiment"]
 df["date"] = pd.to_datetime(df["date"], infer_datetime_format=True)
 
 # group by month and plot a chart
-df["month"] = df["date"].dt.strftime("%Y-%m")
-grouped = df.groupby("month")["sentiment"].mean().to_frame().reset_index()
+df["month"] = df["date"].dt.strftime("%b %Y")
+grouped = df.groupby("month", sort=False)["sentiment"].mean().to_frame().reset_index()
 grouped.columns = ["month", "mean"]
 
+sns.set(style='darkgrid')
 plt.plot(grouped["month"], grouped["mean"])
+
+plt.ylim(-1, 1)
+plt.xticks(rotation=90)
+
+ax = plt.gca()
+for idx, label in enumerate(ax.xaxis.get_ticklabels()):
+    if idx % 4 == 0:
+        label.set_visible(True)
+    else:
+        label.set_visible(False)
+
 plt.show()
 
 print("Tweets: ", len(data))
