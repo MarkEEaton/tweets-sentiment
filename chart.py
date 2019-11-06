@@ -55,21 +55,22 @@ df["date"] = pd.to_datetime(df["date"], infer_datetime_format=True)
 df["month"] = df["date"].dt.strftime("%b %Y")
 grouped = df.groupby("month", sort=False)["sentiment"].mean().to_frame().reset_index()
 grouped.columns = ["month", "mean"]
-
-sns.set(style='darkgrid')
 plt.plot(grouped["month"], grouped["mean"])
 
-# create total tweets plot on a scale of 0 to 0.5
+# plot total tweets on a scale of 0 to 0.5
 grouped_count = df.groupby("month", sort=False).count()
-grouped_count['total'] = grouped_count["date"] / 1002 * 0.5
-pprint(grouped_count)
-
-plt.bar(grouped["month"], grouped_count["total"], color="#aaaaaa")
+grouped_count["total"] = grouped_count["date"] / 1002 * 0.5
+plt.bar(grouped["month"], grouped_count["total"], color="#cccccc")
 
 plt.ylim(-1, 1)
 plt.xticks(rotation=90)
 plt.margins(x=0)
+plt.xlabel("Month")
+plt.ylabel("Sentiment\n1 is positive; -1 is negative")
+plt.suptitle("Sentiment in tweets about Kingsborough")
+plt.legend(("Sentiment", "Number of tweets"), loc="lower right")
 
+# make every fourth tick label visible
 ax = plt.gca()
 for idx, label in enumerate(ax.xaxis.get_ticklabels()):
     if idx % 4 == 0:
@@ -77,6 +78,7 @@ for idx, label in enumerate(ax.xaxis.get_ticklabels()):
     else:
         label.set_visible(False)
 
+sns.set(style="darkgrid")
 plt.show()
 
 print("Tweets: ", len(data))
