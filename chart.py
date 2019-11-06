@@ -1,14 +1,13 @@
 import csv
 import json
 import pandas as pd
+import seaborn as sns
 from datetime import datetime
 from dateutil.parser import parse
 from matplotlib import pyplot as plt
 from pathlib import Path
 from textblob import TextBlob
 
-tweets1 = []
-tweets2 = []
 data = []
 error_count = 0
 
@@ -19,11 +18,11 @@ for path in pathlist1:
         for line in f1:
             try:
                 json_line = json.loads(line)
-                sentiment = TextBlob(json_line['text']).sentiment.polarity
-                data.append((json_line['created_at'], json_line['text'], sentiment))
+                sentiment = TextBlob(json_line["text"]).sentiment.polarity
+                data.append((json_line["created_at"], json_line["text"], sentiment))
             except json.decoder.JSONDecodeError:
                 error_count += 1
-                print('Error reading json!')
+                print("Error reading json!")
                 pass
 
 # loop through the tcat archive
@@ -40,17 +39,20 @@ for path in pathlist2:
             except:
                 error_count += 1
                 print("Error reading csv!")
-                raise # raise because passing here would omit too many values
+                raise  # raise because passing here would omit too many values
 
-        # two missing months; add None values 
+        # two missing months; add None values
         data.append((datetime(2018, 1, 1), "", None))
         data.append((datetime(2018, 2, 1), "", None))
 
+# create a dataframe
 df = pd.DataFrame(data=data)
 df.columns = ["date", "tweet", "sentiment"]
-df['date'] = pd.to_datetime(df['date'], infer_datetime_format=True)
-df['month'] = df['date'].dt.strftime('%Y-%m')
-grouped = df.groupby('month')['sentiment'].mean()
+df["date"] = pd.to_datetime(df["date"], infer_datetime_format=True)
+
+# group by month and plot a chart
+df["month"] = df["date"].dt.strftime("%Y-%m")
+grouped = df.groupby("month")["sentiment"].mean()
 grouped.columns = ["month", "mean"]
 grouped.plot(x="month", y="mean", ylim=(-1, 1))
 plt.show()
