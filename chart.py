@@ -7,6 +7,7 @@ from dateutil.parser import parse
 from matplotlib import pyplot as plt
 from pathlib import Path
 from textblob import TextBlob
+from pprint import pprint
 
 data = []
 error_count = 0
@@ -52,9 +53,10 @@ df["date"] = pd.to_datetime(df["date"], infer_datetime_format=True)
 
 # group by month and plot a chart
 df["month"] = df["date"].dt.strftime("%Y-%m")
-grouped = df.groupby("month")["sentiment"].mean()
+grouped = df.groupby("month")["sentiment"].mean().to_frame().reset_index()
 grouped.columns = ["month", "mean"]
-grouped.plot(x="month", y="mean", ylim=(-1, 1))
+
+plt.plot(grouped["month"], grouped["mean"])
 plt.show()
 
 print("Tweets: ", len(data))
