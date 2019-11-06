@@ -59,8 +59,16 @@ grouped.columns = ["month", "mean"]
 sns.set(style='darkgrid')
 plt.plot(grouped["month"], grouped["mean"])
 
+# create total tweets plot on a scale of 0 to 0.5
+grouped_count = df.groupby("month", sort=False).count()
+grouped_count['total'] = grouped_count["date"] / 1002 * 0.5
+pprint(grouped_count)
+
+plt.bar(grouped["month"], grouped_count["total"], color="#aaaaaa")
+
 plt.ylim(-1, 1)
 plt.xticks(rotation=90)
+plt.margins(x=0)
 
 ax = plt.gca()
 for idx, label in enumerate(ax.xaxis.get_ticklabels()):
