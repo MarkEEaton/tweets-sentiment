@@ -3,11 +3,9 @@ import json
 import pandas as pd
 import seaborn as sns
 from datetime import datetime
-from dateutil.parser import parse
 from matplotlib import pyplot as plt
 from pathlib import Path
 from textblob import TextBlob
-from pprint import pprint
 
 data = []
 error_count = 0
@@ -23,7 +21,7 @@ for path in pathlist1:
                 data.append((json_line["created_at"], json_line["text"], sentiment))
             except json.decoder.JSONDecodeError:
                 error_count += 1
-                print("Error reading json!")
+                print("Error reading json! " + str(path))
                 pass
 
 # loop through the tcat archive
